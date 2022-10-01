@@ -51,7 +51,7 @@
 
 ## How to OpenGL
 
-* The explanation is left as comments in **`ConsoleApplication1.cpp`**
+* The explanation is left as comments in **`parts/triangle.cpp`**
 
 ## Things I've drawn
 
