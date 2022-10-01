@@ -1,17 +1,7 @@
-// ConsoleApplication1.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
 
 #include <iostream>
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
-#include <cmath>
-
-const float pi = 2 * acos(0.0);
-
-// accepts x as degreee measure, returns tangent value
-float tan_(float x) {
-    return tan(x*pi/180);
-}
 
 // a resize window function
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -131,75 +121,24 @@ int main() {
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
+    // vertices for the triangle
+    // vertices for the triangle
+    float triangleVertices[] = {
+        -0.5f, -0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f
+    };
 
     // vertices for the rectangle
     float vertices[] = {
-        -0.5f, 0.0f, 0.0f,
-        -0.1f, 0.0f, 0.0f,
-        -0.3f, 0.34641f, 0.0f,
-        -0.2f, 0.34641f, 0.0f,
-         0.2f, 0.34641f, 0.0f,
-        0.0f, 0.0f, 0.0f,
-        0.1f, 0.0f, 0.0f,
-        0.5f, 0.0f, 0.0f,
-        0.3f, 0.34641f, 0.0f
+     0.5f,  0.5f, 0.0f,  // top right
+     0.5f, -0.5f, 0.0f,  // bottom right
+    -0.5f, -0.5f, 0.0f,  // bottom left
+    -0.5f,  0.5f, 0.0f   // top left 
     };
-
-    float letter_a_vertices[] = {
-        0.0f, 0.0f, 0.0f,
-        0.0f, -0.1f, 0.0f,
-        -0.3f * tan_(15), -0.4f, 0.0f,
-        0.3f * tan_(15), -0.4f, 0.0f,
-        -0.4f * tan_(15), -0.5f, 0.0f,
-        0.4f * tan_(15), -0.5f, 0.0f,
-        -1.0f * tan_(15), -1.0f, 0.0f,
-        -1.0f * tan_(15) + 0.1f, -1.0f, 0.0f,
-        1.0f * tan_(15) - 0.1f, -1.0f, 0.0f,
-        1.0f * tan_(15), -1.0f, 0.0f,
-    };
-
-    unsigned int letter_a_indices[] = {
-        0,6,7,
-        0,1,7,
-        0,8,9,
-        0,1,8,
-        2,3,5,
-        2,4,5,
-    };
-
-    float letter_h_vertices[] = {
-        0.0f, 0.0f, 0.0f,
-        0.1f, 0.0f, 0.0f,
-        0.5f, 0.0f, 0.0f,
-        0.6f, 0.0f, 0.0f,
-        0.1f, -0.40f, 0.0f,
-        0.5f, -0.40f, 0.0f,
-        0.1f, -0.60f, 0.0f,
-        0.5f, -0.60f, 0.0f,
-        0.0f, -1.0f, 0.0f,
-        0.1f, -1.0f, 0.0f,
-        0.5f, -1.0f, 0.0f,
-        0.6f, -1.0f, 0.0f,
-    };
-
-    // shift letter A to the left by a bit
-    for (int i = 0; i < 30; i += 3) {
-        letter_a_vertices[i] -= 0.4f;
-    }
-
-    unsigned int letter_h_indices[] = {
-        0,1,8,
-        1,8,9,
-        2,3,10,
-        3,10,11,
-        4,5,6,
-        5,6,7
-    };
-
     unsigned int indices[] = {  // note that we start from 0!
-        0, 1, 2,    // first triangle
-        3, 4, 5,    // second triangle
-        6, 7, 8     // third triangle
+        0, 1, 3,   // first triangle
+        1, 2, 3    // second triangle
     };
 
     unsigned int VBO, VAO, EBO;
@@ -220,10 +159,10 @@ int main() {
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(letter_h_vertices), letter_h_vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(letter_h_indices), letter_h_indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     
 
@@ -282,7 +221,7 @@ int main() {
         // rectangle drawing
         glUseProgram(shaderProgram);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

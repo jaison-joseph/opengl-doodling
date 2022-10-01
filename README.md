@@ -3,6 +3,7 @@
 ## Some things you should know
 
 * OpenGL is just a spec
+* OpenGL mainly works with triangles, so that means drawing the letter 'A' and 'H' took 6 triangles each.
 * This code is based on https://learnopengl.com/Getting-started/OpenGL
 * We're using OpenGL version 3.3
 * OpenGL is a state machine, it has a bunch of variables to tell how OpenGL should currently operate

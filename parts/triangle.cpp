@@ -1,17 +1,7 @@
-// ConsoleApplication1.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
 
 #include <iostream>
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
-#include <cmath>
-
-const float pi = 2 * acos(0.0);
-
-// accepts x as degreee measure, returns tangent value
-float tan_(float x) {
-    return tan(x*pi/180);
-}
 
 // a resize window function
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -58,6 +48,30 @@ int main() {
     // 'registering' the function to be called when the window is resized
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+    // vertices for the triangle
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f
+    };
+
+    // creating a vertex buffer object; stores vertices in GPU mem
+    unsigned int VBO;
+    glGenBuffers(1, &VBO);
+
+    // binding the buffer to the GL_ARRAY_BUFFER, the type of a vertex buffer
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    //copy the defined buffer to the buffer's mem
+    // the 4th param tells how we want the graphics card to manage the data 
+    // there's 3 options: 
+    // GL_STREAM_DRAW: set once used rarely
+    // GL_STATIC_DRAW: set once used frequenty
+    // GL_DYNAMIC_DRAW: set multiple and used frequently)
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // so now we have stored the vertex data in GPU memory, mananged by a vertex buffer object called VBO
+
     // the vertex shader
 
     // vec3 is a vector that stores 3 floats (hence the suffix 3)
@@ -67,10 +81,10 @@ int main() {
     // this shader does no processing on the input; it simply forwards the input vector to the output
     // the 4th param in the vec$ argument is the position of the vertex attribute in the shader
     const char* vertexShaderSource = "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "void main() {\n"
-        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-        "}\0";
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main() {\n"
+    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "}\0";
 
     // to compile the shader, we call a function to create a 'vertex' kind of shader, then attach the code for th shaer to it and compile
     unsigned int vertexShader;
@@ -95,10 +109,10 @@ int main() {
     // source for the fragment shader
     // the point of this basic fragment shader is simply setting the colors of the pixels, we choose orange
     const char* fragmentShaderSource = "#version 330 core\n"
-        "out vec4 FragColor;\n"
-        "void main() {\n"
-        "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-        "}\0";
+    "out vec4 FragColor;\n"
+    "void main() {\n"
+    "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "}\0";
 
     // create fragment shader obejct, attach code for our frag shader, compile
     unsigned int fragmentShader;
@@ -131,104 +145,6 @@ int main() {
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
 
-
-    // vertices for the rectangle
-    float vertices[] = {
-        -0.5f, 0.0f, 0.0f,
-        -0.1f, 0.0f, 0.0f,
-        -0.3f, 0.34641f, 0.0f,
-        -0.2f, 0.34641f, 0.0f,
-         0.2f, 0.34641f, 0.0f,
-        0.0f, 0.0f, 0.0f,
-        0.1f, 0.0f, 0.0f,
-        0.5f, 0.0f, 0.0f,
-        0.3f, 0.34641f, 0.0f
-    };
-
-    float letter_a_vertices[] = {
-        0.0f, 0.0f, 0.0f,
-        0.0f, -0.1f, 0.0f,
-        -0.3f * tan_(15), -0.4f, 0.0f,
-        0.3f * tan_(15), -0.4f, 0.0f,
-        -0.4f * tan_(15), -0.5f, 0.0f,
-        0.4f * tan_(15), -0.5f, 0.0f,
-        -1.0f * tan_(15), -1.0f, 0.0f,
-        -1.0f * tan_(15) + 0.1f, -1.0f, 0.0f,
-        1.0f * tan_(15) - 0.1f, -1.0f, 0.0f,
-        1.0f * tan_(15), -1.0f, 0.0f,
-    };
-
-    unsigned int letter_a_indices[] = {
-        0,6,7,
-        0,1,7,
-        0,8,9,
-        0,1,8,
-        2,3,5,
-        2,4,5,
-    };
-
-    float letter_h_vertices[] = {
-        0.0f, 0.0f, 0.0f,
-        0.1f, 0.0f, 0.0f,
-        0.5f, 0.0f, 0.0f,
-        0.6f, 0.0f, 0.0f,
-        0.1f, -0.40f, 0.0f,
-        0.5f, -0.40f, 0.0f,
-        0.1f, -0.60f, 0.0f,
-        0.5f, -0.60f, 0.0f,
-        0.0f, -1.0f, 0.0f,
-        0.1f, -1.0f, 0.0f,
-        0.5f, -1.0f, 0.0f,
-        0.6f, -1.0f, 0.0f,
-    };
-
-    // shift letter A to the left by a bit
-    for (int i = 0; i < 30; i += 3) {
-        letter_a_vertices[i] -= 0.4f;
-    }
-
-    unsigned int letter_h_indices[] = {
-        0,1,8,
-        1,8,9,
-        2,3,10,
-        3,10,11,
-        4,5,6,
-        5,6,7
-    };
-
-    unsigned int indices[] = {  // note that we start from 0!
-        0, 1, 2,    // first triangle
-        3, 4, 5,    // second triangle
-        6, 7, 8     // third triangle
-    };
-
-    unsigned int VBO, VAO, EBO;
-    
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &EBO);
-    glGenBuffers(1, &VBO);
-
-    // binding the buffer to the GL_ARRAY_BUFFER, the type of a vertex buffer
-    glBindVertexArray(VAO);
-
-    //the glBufferData copies the defined buffer to the buffer's mem. A desc of the parameters:
-    // the 4th param tells how we want the graphics card to manage the data 
-    // there's 3 options: 
-    // GL_STREAM_DRAW: set once used rarely
-    // GL_STATIC_DRAW: set once used frequenty
-    // GL_DYNAMIC_DRAW: set multiple and used frequently)
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(letter_h_vertices), letter_h_vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(letter_h_indices), letter_h_indices, GL_STATIC_DRAW);
-
-    
-
-    // so now we have stored the vertex data in GPU memory, mananged by a vertex buffer object called VBO
-
     // by now, we have sent the input vertex data to the GPU, along with instructions on how to process the vertex data
     // within the shaders. 
     // We still need to instruct openGL how to interpret vertex data in memory, connect data to the shader attributes
@@ -240,6 +156,17 @@ int main() {
     // 3. Vertex buffer objects associated with vertex attributes by calls to glVertexAttribPointer.
     // can be bound like the VBO 
     // allows us to just configure the vertex attribute pointers once, subsequent calls are replaced by binding the VAO
+
+    // creating a VAO
+    unsigned int VAO;
+    glGenVertexArrays(1, &VAO);
+
+    // binding the VAO
+    glBindVertexArray(VAO);
+    
+    // copy vertices array in a buffer for OpenGL to use
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // 2. then set the vertex attributes pointers
     /*
@@ -279,10 +206,10 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // rectangle drawing
+        // triangle drawing
         glUseProgram(shaderProgram);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glDrawElements(GL_TRIANGLES, 18, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
